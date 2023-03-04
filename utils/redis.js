@@ -1,14 +1,15 @@
-import redis from 'redis';
+import { createClient } from 'redis';
 import { promisify } from 'util';
 
 class RedisClient {
   constructor() {
-    this.client = redis.createClient();
+    this.client = createClient();
+    this.client.connect();
     this.get = promisify(this.client.get).bind(this.client);
   }
 
   isAlive() {
-    return this.client.connected;
+    return this.client.isOpen;
   }
 
   async get(key) {

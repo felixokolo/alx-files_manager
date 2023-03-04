@@ -1,4 +1,5 @@
 import { createClient } from 'redis';
+const { promisify } = require('util');
 
 
 class RedisClient {
@@ -6,11 +7,12 @@ class RedisClient {
   constructor() {
     this.client = createClient();
     this.client.connect();
+    //this.client.getAsync = promisify(this.client.get).bind(this.client);
     this.client.on('error', err => console.log('Redis Client Error', err));
 }
 
   isAlive() {
-    return this.client.isReady;
+    return this.client.isOpen;
   }
 
   async get(key) {

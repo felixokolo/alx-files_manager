@@ -35,6 +35,10 @@ class DBClient {
     return docs;
   }
 
+  async get(key) {
+    return this.users.findOne({'email': key});
+  }
+
 }
 
 const dbClient = new DBClient();

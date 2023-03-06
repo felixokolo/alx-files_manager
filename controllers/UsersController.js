@@ -23,7 +23,7 @@ class UsersController {
     }
     const hashedPassword = crypto.createHash('sha1').update(password).digest('hex');
     const result = await dbClient.users.insertOne({ email: email, password: hashedPassword });
-    return response.status(201).send({userId: result.insertedId, email: email});
+    return response.status(201).send({id: result.insertedId, email: email});
   }
 
 }

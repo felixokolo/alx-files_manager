@@ -1,7 +1,5 @@
-import RedisClient from '../utils/redis';
 import dbClient from '../utils/db';
 import crypto from 'crypto';
-import { exist } from 'mongodb/lib/gridfs/grid_store';
 
 
 class UsersController {
@@ -9,7 +7,6 @@ class UsersController {
   static async postNew(request, response) {
     const email = request.body.email;
     const password = request.body.password;
-    console.log(password);
     if (email === undefined) {
       return response.status(400).send({'error': 'Missing email'});
     }

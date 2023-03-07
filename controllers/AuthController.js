@@ -31,7 +31,7 @@ class AuthController {
   }
 
   static async getDisconnect(request, response) {
-    const token = request.headers['X-Token'];
+    const token = request.headers['x-token'];
     console.log(request.headers);
     if (token === undefined) {
       return response.status(401).send({error: 'Unauthorized'});

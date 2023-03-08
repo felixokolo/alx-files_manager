@@ -6,7 +6,7 @@ import RedisClient from '../utils/redis';
 class AuthController {
 
   static async getConnect(request, response) {
-    if (request.headers.authorization === undefined) {
+    if (!request.headers.authorization) {
       return response.status(401).send({error: 'Unauthorized'});
     }
     const auth = request.headers.authorization;
@@ -19,7 +19,7 @@ class AuthController {
     const password = emPasUTF.split(':')[1];
     const hashedPassword = crypto.createHash('sha1').update(password).digest('hex');
     const exist = await dbClient.users.findOne({email: email, password: hashedPassword});
-    if (exist === null) {
+    if (!exist) {
       return response.status(401).send({error: 'Unauthorized'});
     }
     else {
@@ -33,12 +33,12 @@ class AuthController {
   static async getDisconnect(request, response) {
     const token = request.headers['x-token'];
     console.log(request.headers);
-    if (token === undefined) {
+    if (!token) {
       return response.status(401).send({error: 'Unauthorized'});
     }
     const key = "auth_" + token;
     const email = await RedisClient.get(key);
-    if (email === null) {
+    if (!email) {
       return response.status(401).send({error: 'Unauthorized'});
     }
     else {

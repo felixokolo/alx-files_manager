@@ -1,6 +1,6 @@
 import dbClient from '../utils/db';
 import { v4 as uuid } from 'uuid';
-import crypto from 'crypto';
+import sha1 from 'sha1';
 import RedisClient from '../utils/redis';
 
 class AuthController {
@@ -17,7 +17,7 @@ class AuthController {
     const emPasUTF = Buffer.from(emPas[1], 'base64').toString('utf-8');
     const email = emPasUTF.split(':')[0];
     const password = emPasUTF.split(':')[1];
-    const hashedPassword = crypto.createHash('sha1').update(password).digest('hex');
+    const hashedPassword = sha1(password);
     const exist = await dbClient.users.findOne({email: email, password: hashedPassword});
     if (!exist) {
       return response.status(401).send({error: 'Unauthorized'});

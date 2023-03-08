@@ -40,7 +40,12 @@ class FilesController {
 
       if (type === 'folder'){
         const _id = await dbClient.files.insertOne(doc);
-        return response.status(201).send({id: doc._id, ...doc});
+        return response.status(201).send({id: doc._id,
+                                          name: doc.name,
+                                          userId: doc.userId,
+                                          type: doc.type,
+                                          isPublic: doc.isPublic,
+                                          parentId: doc.parentId});
       }
 
       const pathDir = process.env.FOLDER_PATH || '/tmp/files_manager';

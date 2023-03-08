@@ -10,7 +10,7 @@ class FilesController {
       return response.status(401).send({error: 'Unauthorized'});
     }
     const key = "auth_" + token;
-    const email = await RedisClient.get(key);
+    const email = await redisClient.get(key);
     if (email === null) {
       return response.status(401).send({error: 'Unauthorized'});
     }

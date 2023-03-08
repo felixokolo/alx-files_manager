@@ -1,5 +1,5 @@
 import dbClient from '../utils/db';
-import crypto from 'crypto';
+import sha1 from 'sha1';
 const { ObjectId } = require('mongodb');
 import RedisClient from '../utils/redis';
 
@@ -9,30 +9,30 @@ class UsersController {
   static async postNew(request, response) {
     const email = request.body.email;
     const password = request.body.password;
-    if (email === undefined) {
+    if (!email) {
       return response.status(400).send({'error': 'Missing email'});
     }
-    if (password === undefined) {
+    if (!password) {
       return response.status(400).send({'error': 'Missing password'});
     }
 
     const exist = await dbClient.users.findOne({'email': email});
-    if (exist !== null) {
+    if (!!exist) {
       return response.status(400).send({'error': 'Already exist'})
     }
-    const hashedPassword = crypto.createHash('sha1').update(password).digest('hex');
+    const hashedPassword = sha1(password);
     const result = await dbClient.users.insertOne({ email: email, password: hashedPassword });
     return response.status(201).send({id: result.insertedId, email: email});
   }
 
   static async getMe(request, response) {
-    const token = request.headers['x-token'];
-    if (token === undefined) {
+    const token = request.headers['x-token'] || null;
+    if (!token) {
       return response.status(401).send({error: 'Unauthorized'});
     }
     const key = "auth_" + token;
     const email = await RedisClient.get(key);
-    if (email === null) {
+    if (!email) {
       return response.status(401).send({error: 'Unauthorized'});
     }
     else {
